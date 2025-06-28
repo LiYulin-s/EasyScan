@@ -29,14 +29,13 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
+    - name: Create local.properties
+      run: echo "easyscan.url=${{ secrets.EASYSCAN_URL }}" > local.properties
+
     - name: Build debug APK
-      env:
-        EASYSCAN_URL: ${{ secrets.EASYSCAN_URL }}
       run: ./gradlew :composeApp:assembleDebug
 
     - name: Build release APK
-      env:
-        EASYSCAN_URL: ${{ secrets.EASYSCAN_URL }}
       run: ./gradlew :composeApp:assembleRelease
 
     - name: Upload debug APK

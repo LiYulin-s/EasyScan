@@ -118,11 +118,6 @@ buildkonfig {
     packageName = "io.github.liyulin.easyscan.config"
 
     defaultConfigs {
-        val url = try {
-            gradleLocalProperties(rootDir, providers).getProperty("easyscan.url")
-        } catch (_: Exception) {
-            System.getenv("EASYSCAN_URL") ?: throw IllegalStateException("Please set the EASYSCAN_URL environment variable or easyscan.url in local.properties")
-        }
-        buildConfigField(STRING, "URL", url)
+        buildConfigField(STRING, "URL", gradleLocalProperties(rootDir, providers).getProperty("easyscan.url"))
     }
 }
