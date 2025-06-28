@@ -11,3 +11,4 @@ expect fun getDataStorePath(): String
 
 @Composable
 expect fun BackHandler(onBack: () -> Unit)
+expect fun shareLink(link: String)

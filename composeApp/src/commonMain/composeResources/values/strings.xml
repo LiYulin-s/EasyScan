@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Info -->
+    <string name="app_name">EasyScan</string>
+    <string name="app_slogan">轻松扫描，轻松生活</string>
+
+    <!-- BeforeScan Screen -->
+    <string name="new_scan">新建扫描</string>
+    <string name="input_scan_name">输入扫描名称</string>
+    <string name="scan_name_placeholder">例: 潮流金属导论</string>
+    <string name="start_scan">开始扫描</string>
+    <string name="creating">创建中...</string>
+    <string name="scan_history">扫描历史</string>
+    <string name="clear_history">清除历史</string>
+    <string name="no_scan_records">暂无扫描记录</string>
+    <string name="start_first_scan">开始您的第一次扫描吧！</string>
+
+    <!-- Scan Screen -->
+    <string name="scan_task">扫描任务</string>
+    <string name="back">返回</string>
+    <string name="scanned_count">已扫描 %1$s 个二维码</string>
+    <string name="scan_data_upload_failed">扫描数据上传失败: %s</string>
+    <string name="aim_qr_code">对准二维码进行扫描</string>
+    <string name="scan_results">扫描结果</string>
+    <string name="no_qr_scanned">尚未扫描任何二维码</string>
+    <string name="camera_instruction">将摄像头对准二维码即可开始扫描</string>
+    <string name="scan_task_link">扫描任务链接</string>
+    <string name="share_link">分享链接</string>
+    <string name="share_content_template">任务名称: %1$s\n扫描链接: %2$s\n跳转链接: %3$s\n实时二维码扫描链接: %4$s</string>
+
+    <!-- Icons -->
+    <string name="scan_icon">扫描图标</string>
+    <string name="search_icon">搜索图标</string>
+    <string name="history_icon">历史图标</string>
+    <string name="success_icon">成功图标</string>
+    <string name="scan_hint">扫描提示</string>
+    <string name="no_history">无历史记录</string>
+    <string name="scan_record">扫描记录</string>
+</resources>
+

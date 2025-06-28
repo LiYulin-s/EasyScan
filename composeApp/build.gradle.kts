@@ -3,6 +3,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import org.jetbrains.compose.reload.ComposeHotRun
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -42,14 +43,19 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
-            implementation(libs.easyqrscan)
             implementation(libs.kotlinx.serialization)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.cio)
             implementation(libs.ktor.client.contentNagotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+
+            implementation(libs.camerak)
+            implementation(libs.camerak.qrscanner)
+
+            implementation(libs.materialKolor)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -69,8 +75,8 @@ android {
         applicationId = "io.github.liyulin.easyscan"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1.0"
     }
     packaging {
         resources {
@@ -99,16 +105,24 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "io.github.liyulin.easyscan"
-            packageVersion = "1.0.0"
+            packageVersion = "1.1.0"
         }
     }
+}
+
+tasks.withType<ComposeHotRun>().configureEach {
+    mainClass.set("io.github.liyulin.easyscan.MainKt")
 }
 
 buildkonfig {
     packageName = "io.github.liyulin.easyscan.config"
 
     defaultConfigs {
-
-        buildConfigField(STRING, "URL", gradleLocalProperties(rootDir, providers).getProperty("easyscan.url"))
+        val url = try {
+            gradleLocalProperties(rootDir, providers).getProperty("easyscan.url")
+        } catch (_: Exception) {
+            System.getenv("EASYSCAN_URL") ?: throw IllegalStateException("Please set the EASYSCAN_URL environment variable or easyscan.url in local.properties")
+        }
+        buildConfigField(STRING, "URL", url)
     }
 }

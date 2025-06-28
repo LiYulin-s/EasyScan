@@ -20,3 +20,14 @@ actual fun getDataStorePath(): String {
 actual fun BackHandler(onBack: () -> Unit) {
     androidx.activity.compose.BackHandler(onBack = onBack)
 }
+
+actual fun shareLink(link: String) {
+    val context: Context = ContextHandler.currentContext!!
+    val sendIntent = android.content.Intent().apply {
+        action = android.content.Intent.ACTION_SEND
+        putExtra(android.content.Intent.EXTRA_TEXT, link)
+        type = "text/plain"
+    }
+    val shareIntent = android.content.Intent.createChooser(sendIntent, null)
+    context.startActivity(shareIntent)
+}

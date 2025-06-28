@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Info -->
+    <string name="app_name">EasyScan</string>
+    <string name="app_slogan">Easy Scan, Easy Life</string>
+
+    <!-- BeforeScan Screen -->
+    <string name="new_scan">New Scan</string>
+    <string name="input_scan_name">Enter scan name</string>
+    <string name="scan_name_placeholder">e.g: Metal Trends Introduction</string>
+    <string name="start_scan">Start Scan</string>
+    <string name="creating">Creating...</string>
+    <string name="scan_history">Scan History</string>
+    <string name="clear_history">Clear History</string>
+    <string name="no_scan_records">No scan records yet</string>
+    <string name="start_first_scan">Start your first scan!</string>
+
+    <!-- Scan Screen -->
+    <string name="scan_task">Scan Task</string>
+    <string name="back">Back</string>
+    <string name="scanned_count">Scanned %d QR codes</string>
+    <string name="scan_data_upload_failed">Scan data upload failed: %s</string>
+    <string name="aim_qr_code">Aim at QR code to scan</string>
+    <string name="scan_results">Scan Results</string>
+    <string name="no_qr_scanned">No QR codes scanned yet</string>
+    <string name="camera_instruction">Point camera at QR code to start scanning</string>
+    <string name="scan_task_link">Scan Task Link</string>
+    <string name="share_link">Share Link</string>
+    <string name="share_content_template">Task Name: %1$s\nScan Link: %2$s\nRedirect Link: %3$s\nReal-time QR Scan Link: %4$s</string>
+
+    <!-- Icons -->
+    <string name="scan_icon">Scan Icon</string>
+    <string name="search_icon">Search Icon</string>
+    <string name="history_icon">History Icon</string>
+    <string name="success_icon">Success Icon</string>
+    <string name="scan_hint">Scan Hint</string>
+    <string name="no_history">No History</string>
+    <string name="scan_record">Scan Record</string>
+</resources>
+

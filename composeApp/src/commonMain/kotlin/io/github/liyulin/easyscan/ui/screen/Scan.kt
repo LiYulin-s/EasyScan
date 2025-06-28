@@ -1,31 +1,16 @@
 package io.github.liyulin.easyscan.ui.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.QrCodeScanner
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,36 +18,54 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.kashif.cameraK.controller.CameraController
+import com.kashif.cameraK.enums.CameraLens
+import com.kashif.cameraK.enums.Directory
+import com.kashif.cameraK.enums.FlashMode
+import com.kashif.cameraK.enums.ImageFormat
+import com.kashif.cameraK.ui.CameraPreview
+import com.kashif.qrscannerplugin.rememberQRScannerPlugin
+import easyscan.composeapp.generated.resources.*
 import io.github.liyulin.easyscan.BackHandler
-import io.github.liyulin.easyscan.domain.updateScan
+import io.github.liyulin.easyscan.config.BuildKonfig
 import io.github.liyulin.easyscan.domain.NetworkResult
+import io.github.liyulin.easyscan.domain.updateScan
+import io.github.liyulin.easyscan.shareLink
 import io.github.liyulin.easyscan.ui.components.SimpleErrorMessage
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import org.publicvalue.multiplatform.qrcode.CodeType
-import org.publicvalue.multiplatform.qrcode.ScannerWithPermissions
+import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScanScreen(
     modifier: Modifier = Modifier,
     key: String,
-    scanName: String = "扫描任务",
+    scanName: String = stringResource(Res.string.scan_task),
     onBack: () -> Unit = {},
 ) {
-    var code by remember { mutableStateOf("") }
     var scannedCodes by remember { mutableStateOf(listOf<String>()) }
     var updateError by remember { mutableStateOf<String?>(null) }
     var isUpdating by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
+    // 初始化 QRScanner Plugin
+
+    val cameraController = remember { mutableStateOf<CameraController?>(null) }
+    val qrScannerPlugin = rememberQRScannerPlugin(coroutineScope = scope)
+
+    // 预先获取本地化字符串
+    val uploadFailedTemplate = stringResource(Res.string.scan_data_upload_failed)
+
     BackHandler {
         onBack()
     }
 
-    LaunchedEffect(code) {
-        if (code.isNotEmpty()) {
-            scope.launch {
+    LaunchedEffect(Unit) {
+        qrScannerPlugin.getQrCodeFlow().distinctUntilChanged().collectLatest { code ->
+            if (code.isNotEmpty()) {
                 isUpdating = true
                 updateError = null
 
@@ -72,14 +75,17 @@ fun ScanScreen(
                             scannedCodes = scannedCodes + code
                         }
                     }
+
                     is NetworkResult.Error -> {
-                        updateError = "扫描数据上传失败: ${result.exception.message}"
+                        updateError = uploadFailedTemplate.replace("%s", result.exception.message ?: "")
                     }
+
                     is NetworkResult.Loading -> {
                         // 已经在isUpdating中处理了
                     }
                 }
                 isUpdating = false
+
             }
         }
     }
@@ -110,7 +116,7 @@ fun ScanScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "已扫描 ${scannedCodes.size} 个二维码",
+                                    text = stringResource(Res.string.scanned_count, scannedCodes.size),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                                 )
@@ -129,7 +135,7 @@ fun ScanScreen(
                         IconButton(onClick = onBack) {
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "返回"
+                                contentDescription = stringResource(Res.string.back)
                             )
                         }
                     },
@@ -144,9 +150,15 @@ fun ScanScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+
+                // 顶部间距
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+
                 // 网络错误提示
                 updateError?.let { error ->
                     item {
@@ -174,29 +186,36 @@ fun ScanScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.QrCodeScanner,
-                                    contentDescription = "扫描图标",
+                                    contentDescription = stringResource(Res.string.scan_icon),
                                     tint = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.size(24.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = "对准二维码进行扫描",
+                                    text = stringResource(Res.string.aim_qr_code),
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Medium
                                 )
                             }
 
-                            ScannerWithPermissions(
+                            CameraPreview(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(300.dp)
                                     .clip(MaterialTheme.shapes.large),
-                                onScanned = { scannedCode ->
-                                    code = scannedCode
-                                    false
+                                cameraConfiguration = {
+                                    setCameraLens(CameraLens.BACK)
+                                    setFlashMode(FlashMode.OFF)
+                                    setImageFormat(ImageFormat.JPEG)
+                                    setDirectory(Directory.PICTURES)
+                                    addPlugin(qrScannerPlugin)
                                 },
-                                types = listOf(CodeType.QR),
+                                onCameraControllerReady = {
+                                    cameraController.value = it
+                                    qrScannerPlugin.startScanning()
+                                }
                             )
+
                         }
                     }
                 }
@@ -218,13 +237,13 @@ fun ScanScreen(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.CheckCircle,
-                                        contentDescription = "成功图标",
+                                        contentDescription = stringResource(Res.string.success_icon),
                                         tint = MaterialTheme.colorScheme.primary,
                                         modifier = Modifier.size(20.dp)
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
-                                        text = "扫描结果",
+                                        text = stringResource(Res.string.scan_results),
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.SemiBold
                                     )
@@ -269,19 +288,19 @@ fun ScanScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.QrCodeScanner,
-                                    contentDescription = "扫描提示",
+                                    contentDescription = stringResource(Res.string.scan_hint),
                                     modifier = Modifier.size(48.dp),
                                     tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                                 )
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text(
-                                    text = "尚未扫描任何二维码",
+                                    text = stringResource(Res.string.no_qr_scanned),
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                                     textAlign = TextAlign.Center
                                 )
                                 Text(
-                                    text = "将摄像头对准二维码即可开始扫描",
+                                    text = stringResource(Res.string.camera_instruction),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
                                     textAlign = TextAlign.Center,
@@ -290,6 +309,65 @@ fun ScanScreen(
                             }
                         }
                     }
+                }
+
+                // URL 显示卡片
+                item {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(20.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = stringResource(Res.string.scan_task_link),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+
+
+                                IconButton(
+                                    onClick = {
+                                        scope.launch {
+                                            shareLink(
+                                                getString(
+                                                    Res.string.share_content_template,
+                                                    scanName,
+                                                    "${BuildKonfig.URL}/$key",
+                                                    "${BuildKonfig.URL}/$key/redirect",
+                                                    "${BuildKonfig.URL}/$key/qrcode"
+                                                )
+                                            )
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Share,
+                                        contentDescription = stringResource(Res.string.share_link),
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            }
+                            Text(
+                                text = "${BuildKonfig.URL}/$key",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.padding(top = 8.dp)
+                            )
+                        }
+                    }
+                }
+
+                // 底部间距
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
         }

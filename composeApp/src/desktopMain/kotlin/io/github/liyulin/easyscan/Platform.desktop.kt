@@ -1,6 +1,8 @@
 package io.github.liyulin.easyscan
 
 import androidx.compose.runtime.Composable
+import java.awt.Toolkit
+import java.awt.datatransfer.StringSelection
 import java.io.File
 
 actual fun getDataStorePath(): String {
@@ -10,4 +12,8 @@ actual fun getDataStorePath(): String {
 
 @Composable
 actual fun BackHandler(onBack: () -> Unit) {
+}
+
+actual fun shareLink(link: String) {
+    Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(link), null)
 }

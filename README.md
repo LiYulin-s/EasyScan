@@ -1,6 +1,11 @@
 # EasyScan
 
-一个基于Kotlin Multiplatform和Compose Multiplatform构建的跨平台二维码扫描应用，支持Android和Desktop平台。
+一个基于Kotlin Multiplatform和Compose Multiplatform构建的跨平台二维码扫描和同步应用，支持Android和Desktop平台。
+
+<div style="display: flex; justify-content: center; gap: 2%;">
+  <img src="docs/img/screenshot_1.jpg" alt="screenshot 1" width="45%">
+  <img src="docs/img/screenshot_2.jpg" alt="screenshot 2" width="45%">
+</div>
 
 ## 功能特性
 
@@ -51,27 +56,35 @@ easyscan.url=http://your-server-address:port
 ./gradlew :composeApp:assembleRelease
 ```
 
-## 🙏 致谢
+## 🤖 GitHub Actions 自动编译（Fork 用户指南）
 
-本项目使用了以下优秀的开源项目和技术：
+1. Fork 本仓库到你的账号。
+2. 进入你的仓库，点击“Settings” → “Secrets and variables” → “Actions”。
+3. 新增一个名为 `EASYSCAN_URL` 的 Repository secret，值为你的服务端地址（如 `https://your-server.com`）。
+4. （可选）如需自定义更多配置，可参考 `.github/workflows/build.yml`。
+5. Push 或创建 Tag（如 `v1.0.0`），GitHub Actions 会自动编译并在 Release 页面生成 APK。
+
+## 🙏 鸣谢
 
 ### 核心技术栈
 - **[Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html)** - 跨平台开发框架
 - **[Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)** - 声明式UI框架
 - **[Material Design 3](https://m3.material.io/)** - Google Material Design设计系统
 
-### 主要依赖库
-- **[EasyQRScan](https://github.com/kalinjul/EasyQRScan)** - 二维码扫描核心库
-- **[Ktor](https://ktor.io/)** - HTTP客户端和网络通信
-- **[Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization)** - JSON序列化支持
-- **[AndroidX DataStore](https://developer.android.com/topic/libraries/architecture/datastore)** - 数据存储解决方案
-- **[BuildKonfig](https://github.com/yshrsmz/BuildKonfig)** - Kotlin Multiplatform配置管理
+本项目基于以下开源项目和技术栈：
 
-### 构建工具和插件
-- **[Gradle](https://gradle.org/)** - 构建自动化工具
-- **[Android Gradle Plugin](https://developer.android.com/studio/build)** - Android构建支持
-- **[Compose Compiler](https://developer.android.com/jetpack/androidx/releases/compose-compiler)** - Compose编译器
-- **[Compose Hot Reload](https://github.com/JetBrains/compose-hot-reload)** - 热重载支持
+- [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html)
+- [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)
+- [Material Design 3](https://m3.material.io/)
+- [EasyQRScan](https://github.com/kalinjul/EasyQRScan)
+- [CameraK](https://github.com/Kashif-E/CameraK)
+- [Ktor](https://ktor.io/)
+- [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization)
+- [AndroidX DataStore](https://developer.android.com/topic/libraries/architecture/datastore)
+- [BuildKonfig](https://github.com/yshrsmz/BuildKonfig)
+- [Gradle](https://gradle.org/)
+- [Android Gradle Plugin](https://developer.android.com/studio/build)
+- [Compose Hot Reload](https://github.com/JetBrains/compose-hot-reload)
 
 ### 特别感谢
 - **JetBrains** 提供的强大开发工具和Kotlin生态系统
@@ -80,7 +93,7 @@ easyscan.url=http://your-server-address:port
 
 ## 🤝 贡献
 
-欢迎提交Issue和Pull Request来帮助改进这个项目。
+欢迎提交 Issue 和 Pull Request 来帮助改进这个项目。
 
 ## 📄 许可证
 

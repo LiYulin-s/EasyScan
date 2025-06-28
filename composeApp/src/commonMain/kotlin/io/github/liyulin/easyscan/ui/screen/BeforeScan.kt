@@ -24,6 +24,9 @@ import io.github.liyulin.easyscan.domain.newScan
 import io.github.liyulin.easyscan.ui.components.SimpleErrorMessage
 import io.github.liyulin.easyscan.ui.viewmodel.HistoryViewModel
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
+import easyscan.composeapp.generated.resources.Res
+import easyscan.composeapp.generated.resources.*
 
 /**
  * 扫描前的屏幕显示。
@@ -86,9 +89,14 @@ fun BeforeScanScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp),
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // 顶部间距
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
             item {
                 // 标题部分
                 Card(
@@ -104,19 +112,19 @@ fun BeforeScanScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.QrCodeScanner,
-                            contentDescription = "扫描图标",
+                            contentDescription = stringResource(Res.string.scan_icon),
                             modifier = Modifier.size(48.dp),
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "EasyScan",
+                            text = stringResource(Res.string.app_name),
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
-                            text = "轻松扫描，轻松生活",
+                            text = stringResource(Res.string.app_slogan),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
                             textAlign = TextAlign.Center
@@ -137,7 +145,7 @@ fun BeforeScanScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Text(
-                            text = "新建扫描",
+                            text = stringResource(Res.string.new_scan),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -149,12 +157,12 @@ fun BeforeScanScreen(
                                 scanName = it
                                 errorMessage = null // 清除错误信息
                             },
-                            label = { Text("输入扫描名称") },
-                            placeholder = { Text("例: 潮流金属导论") },
+                            label = { Text(stringResource(Res.string.input_scan_name)) },
+                            placeholder = { Text(stringResource(Res.string.scan_name_placeholder)) },
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Search,
-                                    contentDescription = "搜索图标"
+                                    contentDescription = stringResource(Res.string.search_icon)
                                 )
                             },
                             singleLine = true,
@@ -195,13 +203,13 @@ fun BeforeScanScreen(
                                 } else {
                                     Icon(
                                         imageVector = Icons.Default.QrCodeScanner,
-                                        contentDescription = "扫描图标",
+                                        contentDescription = stringResource(Res.string.scan_icon),
                                         modifier = Modifier.size(20.dp)
                                     )
                                 }
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = if (isLoading) "创建中..." else "开始扫描",
+                                    text = if (isLoading) stringResource(Res.string.creating) else stringResource(Res.string.start_scan),
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Medium
                                 )
@@ -227,12 +235,12 @@ fun BeforeScanScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.History,
-                                contentDescription = "历史图标",
+                                contentDescription = stringResource(Res.string.history_icon),
                                 tint = MaterialTheme.colorScheme.primary
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "扫描历史",
+                                text = stringResource(Res.string.scan_history),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -245,7 +253,7 @@ fun BeforeScanScreen(
                                 },
                                 enabled = historyList.value.isNotEmpty()
                             ) {
-                                Text("清除历史")
+                                Text(stringResource(Res.string.clear_history))
                             }
                         }
                         History(
@@ -256,6 +264,11 @@ fun BeforeScanScreen(
                         )
                     }
                 }
+            }
+
+            // 底部间距
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -280,19 +293,19 @@ fun History(
         ) {
             Icon(
                 imageVector = Icons.Default.History,
-                contentDescription = "无历史记录",
+                contentDescription = stringResource(Res.string.no_history),
                 modifier = Modifier.size(48.dp),
                 tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "暂无扫描记录",
+                text = stringResource(Res.string.no_scan_records),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 textAlign = TextAlign.Center
             )
             Text(
-                text = "开始您的第一次扫描吧！",
+                text = stringResource(Res.string.start_first_scan),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
                 textAlign = TextAlign.Center
@@ -324,7 +337,7 @@ fun History(
                     ) {
                         Icon(
                             imageVector = Icons.Default.QrCodeScanner,
-                            contentDescription = "扫描记录",
+                            contentDescription = stringResource(Res.string.scan_record),
                             modifier = Modifier.size(16.dp)
                         )
                         Text(
