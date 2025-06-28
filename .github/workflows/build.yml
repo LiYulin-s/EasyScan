@@ -6,7 +6,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: MyEndpoint
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -51,4 +50,3 @@ jobs:
       with:
         name: easyscan-release-apk
         path: composeApp/build/outputs/apk/release/*.apk
-
