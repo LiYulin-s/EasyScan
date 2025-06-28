@@ -1,20 +1,12 @@
 name: Build Release APK
 
 on:
-  push:
-    branches: [ main, master ]
-    tags:
-      - 'v*'
-  pull_request:
-    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
   build:
-    env:
-      EASYSCAN_URL: ${{ secrets.EASYSCAN_URL }}
     runs-on: ubuntu-latest
-
+    environment: MyEndpoint
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -39,9 +31,13 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build debug APK
+      env:
+        EASYSCAN_URL: ${{ secrets.EASYSCAN_URL }}
       run: ./gradlew :composeApp:assembleDebug
 
     - name: Build release APK
+      env:
+        EASYSCAN_URL: ${{ secrets.EASYSCAN_URL }}
       run: ./gradlew :composeApp:assembleRelease
 
     - name: Upload debug APK
@@ -56,24 +52,3 @@ jobs:
         name: easyscan-release-apk
         path: composeApp/build/outputs/apk/release/*.apk
 
-    - name: Create Release
-      if: startsWith(github.ref, 'refs/tags/v')
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
-
-    - name: Upload Release Asset
-      if: startsWith(github.ref, 'refs/tags/v')
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: composeApp/build/outputs/apk/release/composeApp-release.apk
-        asset_name: EasyScan-${{ github.ref_name }}.apk
-        asset_content_type: application/vnd.android.package-archive
