@@ -42,10 +42,28 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: easyscan-debug-apk
-        path: composeApp/build/outputs/apk/debug/*.apk
+        path: composeApp/build/outputs/apk/debug/composeApp-debug.apk
 
     - name: Upload release APK
       uses: actions/upload-artifact@v4
       with:
         name: easyscan-release-apk
-        path: composeApp/build/outputs/apk/release/*.apk
+        path: composeApp/build/outputs/apk/release/composeApp-release-unsigned.apk
+
+    - uses: r0adkll/sign-android-release@v1
+      name: Sign app APK and upload
+      id: sign_app
+      with:
+        releaseDirectory: composeApp/build/outputs/apk/release
+        signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+        alias: ${{ secrets.ALIAS }}
+        keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+        keyPassword: ${{ secrets.KEY_PASSWORD }}
+      env:
+        BUILD_TOOLS_VERSION: "34.0.0"
+
+    # Example use of `signedReleaseFile` output -- not needed
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Signed app bundle
+        path: ${{steps.sign_app.outputs.signedReleaseFile}}
