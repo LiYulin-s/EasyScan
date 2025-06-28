@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     env:
-      EASYSCAN_URL = ${{ secrets.EASYSCAN_URL }}
+      EASYSCAN_URL: ${{ secrets.EASYSCAN_URL }}
     runs-on: ubuntu-latest
 
     steps:
